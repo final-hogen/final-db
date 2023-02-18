@@ -1,0 +1,412 @@
+:root {
+  --table-border: solid 1px #80808038;
+  --table-width: 530px;
+  --table-th-color: #ced0ec;
+  --耐久--color:#bae988;
+  --攻撃--color:#dfabab;
+  --防御--color:#a2b2da;
+  --回避--color:#caa1d1;
+  --会心--color:#e4d7ac;
+  --statuscircle-size:150px;
+}
+#menu{
+  position:fixed;
+  right:20px;
+  bottom:10px;
+  transition:1s;
+  background-color: #b9c9e2f0;
+  z-index: 30;
+}
+#menu > div{
+  border: dashed 2px #47495aad;
+  padding: 0 5px;
+}
+#menu a
+,#menu a:hover
+,#menu a:visited
+{
+  color: initial;
+  font-weight: bolder;
+  text-decoration: none;
+}
+.explanation{
+  margin-left: 20px;
+  color: darkgrey;
+}
+.datatable{
+  border-left: var(--table-border);
+  border-top: var(--table-border);
+  border-spacing: 0;
+  width: var(--table-width);
+  margin-left: auto;
+  margin-right: auto;
+}
+.datatable td,.datatable th{
+  border-bottom: var(--table-border);
+  border-right: var(--table-border);
+  font-weight: normal;
+  padding: 0;
+}
+.datatable td{
+  padding-left: 5px;
+}
+.datatable th{
+  background-color: var(--table-th-color);
+  width: 50px;
+}
+.datatable td.imagearea{
+  width: 100px;
+}
+.data-adddiv{
+  width: var(--table-width);
+  border-left: var(--table-border);
+  border-bottom: var(--table-border);
+  border-right: var(--table-border);
+  margin-left: auto;
+  margin-right: auto;
+}
+.data-adddiv.th{
+  background-color: var(--table-th-color);
+}
+.data-adddiv:not(.th){
+  min-height: 50px;
+}
+
+#content_area input{
+  display: none;
+}
+
+#pilot_template
+,#attendance_template
+,#instoryLink_template
+,#pilotface_template
+,#pilotface_radio_template
+,#pilotvoice_radio_template
+,#voicetable_template
+{
+  display: none;
+}
+/*------------------ パイロット情報 ------------------*/
+#pilotinfo{
+  table-layout:fixed;
+}
+#pilotinfo td:not(.imagearea){
+  width: 160px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+#pilotinfo tr:nth-child(3),#pilotinfo tr:nth-child(4),#pilotinfo tr:nth-child(5){
+  font-size: 0.8em;
+}
+
+#pilotinfo .loopmsg > span > span{
+  animation-duration: 6s;
+  animation-name: message-loop-160px;
+}
+@keyframes message-loop-160px {
+  0% {left: 0px;}
+  10% {left: 0px;}
+  85% {left: min( calc(160px - 100%) , 0px );}
+  95% {left: min( calc(160px - 100%) , 0px );}
+  100% {left: 0px;}
+}
+.英名{
+  font-size: 0.8em;
+}
+.inline_comment{
+  display: inline-block;
+  width:400px;
+  text-align: right;
+  color: darkgrey;
+}
+
+#denki:checked ~ #denki_mini{
+  display: none;
+}
+#denki:not(:checked) ~ #denki_long{
+  display: none;
+}
+
+#in_story a,#in_story a:visited{
+  color: blue;
+  text-decoration:none;
+}
+#in_story{
+  margin: 0;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+/*-----------------  ステータス ----------------------*/
+#statustable{
+  table-layout: fixed;
+}
+#statustable .statuscirclearea{
+  width: var(--statuscircle-size);
+  height: var(--statuscircle-size);
+  text-align: center;
+  overflow: hidden;
+}
+#statustable .statuscirclearea > div{
+  width: var(--statuscircle-size);
+  margin-left: auto;
+  margin-right: auto;
+  transform: translate(0,5px);
+}
+#statustable #statuscircle{
+  display: block;
+  position: relative;
+  width: var(--statuscircle-size);
+  height: var(--statuscircle-size);
+}
+#statuscircle .aveline{
+  fill:none;
+  stroke:#7f70ddba;
+  stroke-width:1.5;
+  stroke-dasharray:5,2;
+}
+#statuscircle .myline{
+  fill:none;
+  stroke:#bd316166;
+  stroke-width:1.5;
+}
+#statuscircle .maxline{
+  fill:none;
+  stroke:#92bde780;
+  stroke-width:1.0;
+}
+#backcirclecolor{
+  position: absolute;
+  width: var(--statuscircle-size);
+  height: var(--statuscircle-size);
+  background: conic-gradient(
+    var(--耐久--color),
+    var(--攻撃--color),
+    var(--防御--color),
+    var(--回避--color),
+    var(--会心--color),
+    var(--耐久--color));
+}
+.circletext{
+  font-size: 1.0em;
+  fill: #36368587;
+}
+#statustable td{
+  text-align: right;
+  width:60px;
+  font-size: 0.8em;
+  overflow: hidden;
+}
+#statustable th:first-child{
+  width:40px;
+}
+#statustable th:nth-child(2){
+  background-color: var(--耐久--color);
+}
+#statustable th:nth-child(3){
+  background-color: var(--攻撃--color);
+}
+#statustable th:nth-child(4){
+  background-color: var(--防御--color);
+}
+#statustable th:nth-child(5){
+  background-color: var(--回避--color);
+}
+#statustable th:nth-child(6){
+  background-color: var(--会心--color);
+}
+#statustable th label{
+  width: 100%;
+  display: inline-block;
+}
+#showStatusDesc:not(:checked) ~ #statustable tbody.statusdesc{
+  display: none;
+}
+
+/* --------------  ベースカー  ----------------------*/
+#basecarskill tr:nth-child(2n+0) td{
+  font-size: 0.8em;
+}
+#car固有 tr:first-child th:first-child{
+  background-color: rgb(225, 230, 236); /* 固有 */
+}
+#car知恵 tr:first-child th:first-child{
+  background-color: rgb(154, 188, 230); /* 知恵 */
+}
+#car製造 tr:first-child th:first-child{
+  background-color: rgb(223, 199, 159); /* 製造 */
+}
+#car敏速 tr:first-child th:first-child{
+  background-color: rgb(138, 207, 219);  /* 敏速 */
+}
+#car体質 tr:first-child th:first-child{
+  background-color: rgb(224, 170, 122);  /* 体質 */
+}
+#car感情 tr:first-child th:first-child{
+  background-color: rgb(193, 146, 226);  /* 感情 */
+} 
+/* 休憩
+#basecarskill th:nth-child(7){
+  background-color: rgb(22,108,13);
+} */
+/* ブリッジ
+#basecarskill th:nth-child(7){
+  background-color: rgb(135,19,19); 
+} */
+#basecarshow:not(:checked) ~ #basecarskill tr:nth-child(n + 3){
+  display: none;
+}
+
+/*---------------  スキル  --------------------*/
+#skilltable .icon{
+  height:100px ;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+#skilltable th:nth-child(2n+0){
+  height: 2em;
+}
+#skilltable tr:not(:first-child) td:nth-child(n+2){
+  font-size: 0.8em;
+}
+#skilltable td label{
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+#skillAS:not(:checked) ~ #skilltable tbody[data-skill="AS"] tr:nth-child(n + 3)
+,#skillP1:not(:checked) ~ #skilltable tbody[data-skill="P1"] tr:nth-child(n + 3)
+,#skillP2:not(:checked) ~ #skilltable tbody[data-skill="P2"] tr:nth-child(n + 3)
+,#skillP3:not(:checked) ~ #skilltable tbody[data-skill="P3"] tr:nth-child(n + 3)
+,#skillUR:not(:checked) ~ #skilltable tbody[data-skill="UR"] tr:nth-child(n + 3)
+,#skillPS:not(:checked) ~ #skilltable tbody[data-skill="PS"] tr:nth-child(n + 3)
+{
+  display: none;
+}
+
+/*---------------- 誓約 ---------------------------*/
+#vowtable th{
+  width: 100px;
+}
+#attendance_parent{
+  width: 420px;
+}
+#attendance_area{
+  transform-origin: left top;
+  transform: scale( calc(420 / 530) );
+  width: 530px;
+}
+
+/*-------------------  ボイス  -------------------------*/
+.voicetable th{
+  width: 100px;
+}
+
+.voicetable td{
+  font-size: 0.8em;
+}
+.voicetable th label{
+  display: inline-block;
+  width: 100%;
+}
+.voicetable #exvoice td{
+  font-size: initial;
+}
+#viewexvoice:not(:checked) ~ #voiceskin_area #exvoice{
+  display: none;
+}
+
+#voice_skinselectarea{
+  width: 530px;
+  margin-left: auto;
+  margin-right: auto;
+}
+#voice_skinselectarea > label{
+  display: inline-block;
+  padding: 2px 5px;
+  border: dashed 2px #47495aad ;
+  font-size: 0.8em;
+}
+#voice_skinselectarea > label:first-child:last-child{
+  display: none;
+}
+#voiceskin_area input:not(:checked)+table{
+  display: none;
+ }
+
+/*------------------- スキン --------------------*/
+.pilotskin{
+  width: 100px;
+  height: 200px;
+}
+#pilotfaces{
+  width: 100%;
+  height: 100%;
+}
+#pilotfaces div{
+  position: absolute;
+  width: 100px;
+  height: 200px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  transition: 1s;
+}
+#pilotfaces input:not(:checked)+div{
+ opacity: 0;
+}
+.imagearea[data-rare="UR"] {
+  background-image: radial-gradient(#00000000, var(--panel-UR-color-o));
+}
+.imagearea[data-rare="SSR"] {
+  background-image: radial-gradient(#00000000, var(--panel-SSR-color-o));
+}
+.imagearea[data-rare="SR"] {
+  background-image: radial-gradient(#00000000, var(--panel-SR-color-o));
+}
+.imagearea[data-rare="R"] {
+  background-image: radial-gradient(#00000000, var(--panel-R-color-o));
+}
+.imagearea[data-rare="N"] {
+  background-image: radial-gradient(#00000000, var(--panel-N-color-o));
+}
+.pilotskin > div:last-child{
+  width: 100%;
+  height: 100%;
+  background-size: auto 25px;
+  background-position: left bottom;
+  background-repeat: no-repeat;
+  position: relative;
+  top: -100%;
+}
+.imagearea[data-rare="UR"] .pilotskin> div:last-child{
+  background-image: url(アイコン/UR.webp);
+}
+.imagearea[data-rare="SSR"] .pilotskin> div:last-child{
+  background-image: url(アイコン/SSR.webp);
+}
+.imagearea[data-rare="SR"] .pilotskin> div:last-child{
+  background-image: url(アイコン/SR.webp);
+}
+.imagearea[data-rare="R"] .pilotskin> div:last-child{
+  background-image: url(アイコン/R.webp);
+}
+.imagearea[data-rare="N"] .pilotskin> div:last-child{
+  background-image: url(アイコン/N.webp);
+}
+
+#face_skinselectarea{
+  width: 530px;
+  margin-left: auto;
+  margin-right: auto;
+}
+#face_skinselectarea > label{
+  display: inline-block;
+  padding: 2px 5px;
+  border: dashed 2px #47495aad ;
+  font-size: 0.8em;
+}
+#face_skinselectarea > label:first-child:last-child{
+  display: none;
+}

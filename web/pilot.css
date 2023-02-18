@@ -1,0 +1,89 @@
+:root {
+  --panel-UR-color-o: #fa87a4e8;
+  --panel-SSR-color-o: #f8d5a6e8;
+  --panel-SR-color-o: #f198fde8;
+  --panel-R-color-o: #7dc2fae8;
+  --panel-N-color-o: #a4fc98e8;
+  --border-color: #80808038;
+  --table-border: solid 1px #80808038;
+}
+
+#pilotpanel_template{
+  display: none;
+}
+
+.pilotpanel{
+  display: inline-block;
+  position: relative;
+  width: 100px;
+  height: calc(1.5em + 100px);
+  color: initial;
+  border: solid 1px #80808038;
+  border-radius: 10px;
+  margin-left: 2px;
+  margin-right: 2px;
+  background-image: radial-gradient(#00000000, var(--panel-R-color-o));
+  transform-origin: center;
+  transition: 0.3s;
+}
+.pilotpanel:hover{
+  transform: scale(1.2);
+  z-index: 20;
+}
+
+.pilotpanel[data-rare="UR"]{
+  background-image: radial-gradient(#00000000, var(--panel-UR-color-o));
+}
+.pilotpanel[data-rare="SSR"]{
+  background-image: radial-gradient(#00000000, var(--panel-SSR-color-o));
+}
+.pilotpanel[data-rare="SR"]{
+  background-image: radial-gradient(#00000000, var(--panel-SR-color-o));
+}
+.pilotpanel[data-rare="R"]{
+  background-image: radial-gradient(#00000000, var(--panel-R-color-o));
+}
+.pilotpanel[data-rare="N"]{
+  background-image: radial-gradient(#00000000, var(--panel-N-color-o));
+}
+.pilotpanel .pilotface{
+  width: 100px;
+  height: 100px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.pilotpanel .pilotface > div{
+  width: 100%;
+  height: 100%;
+  background-size: auto 25px;
+  background-position: left bottom;
+  background-repeat: no-repeat;
+  background-image: url(アイコン/UR.webp);
+}
+.pilotpanel[data-rare="UR"] .pilotface > div{
+  background-image: url(アイコン/UR.webp);
+}
+.pilotpanel[data-rare="SSR"] .pilotface > div{
+  background-image: url(アイコン/SSR.webp);
+}
+.pilotpanel[data-rare="SR"] .pilotface > div{
+  background-image: url(アイコン/SR.webp);
+}
+.pilotpanel[data-rare="R"] .pilotface > div{
+  background-image: url(アイコン/R.webp);
+}
+.pilotpanel[data-rare="N"] .pilotface > div{
+  background-image: url(アイコン/N.webp);
+}
+
+.pilotpanel .loopmsg > span > span{
+  animation-name: message-loop-100px;
+}
+@keyframes message-loop-100px {
+  0% {left: 0px;}
+  10% {left: 0px;}
+  85% {left: min( calc(100px - 100%) , 0px );}
+  95% {left: min( calc(100px - 100%) , 0px );}
+  100% {left: 0px;}
+}

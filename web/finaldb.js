@@ -38,22 +38,48 @@ class FinalJsonDB extends FinalAjax{
     this.baseNode = data;
     this.innerObjects = {};
     for (const [key, value] of Object.entries(data)) {
-      this.innerObjects[key] = new this.objectConstructor(value);
+      this.innerObjects[key] = new this.objectConstructor(value,key);
     }
   }
   /**
    * データをタグに変換してぶっこむ
    */
   convert(){
-    var target = this.baseNode;
     var objects = Object.values(this.innerObjects);
     objects.sort(this.compareFn);
+    this.convertArray(objects);
+  }
+  /**
+   * 名前から変換
+   * @param {*} names 
+   */
+  convertNames(names){
+    if(!names || names.length<=0)return;
+    var result = [];
+    for(const name of names){
+      result.push(this.innerObjects[name]);
+    }
+    this.convertArray(result);
+  }
+  /**
+   * データをタグに変換してぶっこむ
+   */
+  convertArray(objects){
+    var results = new Array();
     for(var i in objects){
       var newTagString = objects[i].convertString(this.templateString,this.templateMatches);
       this.dummyTag.innerHTML = newTagString;
       var newTag = this.dummyTag.firstChild;
-      this.replaceTarget.appendChild(newTag);
+      results.push(newTag);
     }
+    this.inputTags(results);
+  }
+  /**
+   * タグデータをターゲットに入れる
+   * @param {*} tags 
+   */
+  inputTags(tags){
+    tags.forEach(tag=> this.replaceTarget.appendChild(tag));
   }
   static sortOederRare(rare){
     switch(rare){
@@ -61,7 +87,7 @@ class FinalJsonDB extends FinalAjax{
       case "R":return 1;
       case "SR":return 2;
       case "SSR":return 3;
-      case "URR":return 4;
+      case "UR":return 4;
     }
     return -1;
   }
@@ -84,12 +110,23 @@ class FinalJsonDB extends FinalAjax{
   }
 }
 
+class FinalJsonDBInsert extends FinalJsonDB
+{
+  constructor(template){
+    super(template,template);
+  }
+  inputTags(tags){
+    tags.forEach(tag=> this.replaceTarget.parentNode.insertBefore(tag,this.replaceTarget));
+  }
+}
+
 /**
  * 一つのデータを扱うクラス
  */
 class FinalJsonObject {
-  constructor(node) {
+  constructor(node,index) {
     this.baseNode = node;
+    this.myIndex = index;
   }
   /**
    * 武器名/名前 みたいなJSONパスを指定してデータを取り出す
@@ -97,6 +134,7 @@ class FinalJsonObject {
    * @returns 
    */
   fetchData(path){
+    if(path=="myindex")return this.myIndex;
     var array = path.split('/');
     var check = this.baseNode;
     for( var i in array ){
@@ -120,12 +158,12 @@ class FinalJsonObject {
   writeData(path,value){
     var array = path.split('/');
     var check = this.baseNode;
-    for( var i in array ){
+    for( var i=0; i<array.length-1; ++i ){
       var check2 = check[array[i]];
-      if(check2==undefined)check2 = check[array[i]] = new Object();
+      if(check2==undefined)check[array[i]] = check2 = new Object();
       check = check2;
     }
-    check = value;
+    check[array[i]] = value;
   }
   /**
    * 文字列の　”{JSONパス}”　をデータに置き換える
@@ -136,11 +174,33 @@ class FinalJsonObject {
   convertString(templateString,matches){
     for( var i in matches ){
       var key = matches[i];
-      var path = key.substring(1, key.length-1);
-      var value = this.fetchString(path);
-      templateString = templateString.replaceAll(key,value);
+      templateString = this.convertStringSingle(templateString,key);
     }
     return templateString;
+  }
+  /**
+   * 文字列の　”{JSONパス}”　をデータに置き換える
+   * @param {*} templateString 
+   * @param {*} key     "{esc:exsample}"
+   * @returns 
+   */
+  convertStringSingle(templateString,key){
+    var inner = key.substring(1, key.length-1);
+    var split = inner.split(":");
+    var path = "";
+    var com = "";
+    if(split.length>1){
+      com = split[0];
+      path = split[1];
+    }else{
+      path = split[0];
+    }
+    var value = this.fetchString(path);
+    switch(com){
+      case"eu":value = encodeURI(value);break;
+      case"et":value = value = value.replaceAll("\n","<br/>");break;
+    }
+    return templateString.replaceAll(key,value);
   }
 }
 
@@ -181,6 +241,15 @@ class FinalAutoMarkup extends FinalAjax{
     this.sortKeys.sort();
     this.sortKeys.reverse();
   }
+  setJsonDataKeyValue(keyval){
+    for( var key in keyval){
+      var value = keyval[key];
+      this.setData(key,value);
+    }
+    this.sortKeys = Object.keys(this.keyvalues);
+    this.sortKeys.sort();
+    this.sortKeys.reverse();
+  }
   setData(key,value){
     this.keyvalues[key]=value;
   }
@@ -193,7 +262,9 @@ class FinalAutoMarkup extends FinalAjax{
       for (var j = 0; j < chileds.length; j++) {
         var chiled = chileds[j];
         if(chiled.nodeType!=Node.TEXT_NODE)continue;
-        chiled.parentNode.replaceChild(this.convertTextNode(chiled),chiled);
+        var newNode = this.convertTextNode(chiled);
+        //if(newNode!==chiled)this.replaceChilds(chiled,this.convertTextNode(chiled));
+        chiled.parentNode.replaceChild(newNode,chiled);
       }
     }
   }
@@ -205,7 +276,6 @@ class FinalAutoMarkup extends FinalAjax{
   convertTextNode(sourceNode){
     if(sourceNode.nodeType!=Node.TEXT_NODE)return sourceNode;
     var srcstring = sourceNode.textContent;
-    var changeCount = 0;
     var srcarray = [srcstring];
     for (let i in this.sortKeys) {
       const key = this.sortKeys[i];
@@ -246,8 +316,10 @@ class FinalAutoMarkup extends FinalAjax{
     if(this.makeMarkupString[key])return this.makeMarkupString[key];
     const keyword = '{keyword}';
     const description = '{description}';
+    const eudescription = '{eu:description}';
     var resultString = this.templateString.replaceAll(keyword,key);
     resultString = resultString.replaceAll(description,desc);
+    resultString = resultString.replaceAll(eudescription,encodeURI(desc));
 
     this.makeMarkupString[key] = resultString;
     return resultString;
